@@ -1,19 +1,18 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export type Document = Product & Document;
+export type CatDocument = Cat & Document;
 
 @Schema()
-export class Product {
+export class Cat {
+  @Prop()
+  name: string;
 
-    @Prop()
-    name: string;
+  @Prop()
+  age: number;
 
-    @Prop()
-    manufacturer: string;
-
-    @Prop()
-    manufactureYear: number;
+  @Prop()
+  breed: string;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product);
+export const CatSchema = SchemaFactory.createForClass(Cat);

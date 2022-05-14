@@ -16,10 +16,10 @@ export class Message {
     created: Date;
   
     @Prop({required: true, ref: 'User'})
-    owner: User | string | any;
+    owner: Types.ObjectId;
   
     @Prop({required: true, ref: 'Room'})
-    room: Room | string;
+    room: Types.ObjectId;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

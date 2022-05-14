@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document,Types, RefType } from 'mongoose';
+import { Document,Types } from 'mongoose';
 import { User } from '../models/users.model';
 import { Message } from './messages.models';
 
 export type RoomDocument = Room & Document;
 @Schema()
 export class Room {
-    _id: Types.ObjectId | string;
+    _id: Types.ObjectId;
 
     @Prop({required: true, maxlength: 20, minlength: 5})
     name: string;

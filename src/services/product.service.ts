@@ -1,28 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Cat, CatDocument } from "../schemas/users.schema";
+import { User, UserDocument } from "../models/users.model";
 
 @Injectable()
 export class ProductService {
 
-    constructor(@InjectModel(Cat.name) private productModel: Model<CatDocument>) {}
+    constructor(@InjectModel(User.name) private productModel: Model<UserDocument>) {}
     
-    async create(product: Cat): Promise<Cat> {
+    async create(product: User): Promise<User> {
         const newProduct = new this.productModel(product);
         return newProduct.save();
     }
 
-    async readAll(): Promise<Cat[]> {
+    async readAll(): Promise<User[]> {
         return await this.productModel.find().exec();
     }
 
-    async readById(id): Promise<Cat> {
+    async readById(id): Promise<User> {
         return await this.productModel.findById(id).exec();
     }
 
-    async update(id, Cat: Cat): Promise<Cat> {
-        return await this.productModel.findByIdAndUpdate(id, Cat, {new: true})
+    async update(id, User: User): Promise<User> {
+        return await this.productModel.findByIdAndUpdate(id, User, {new: true})
     }
 
     async delete(id): Promise<any> {

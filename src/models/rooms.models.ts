@@ -10,12 +10,15 @@ export class Room {
 
     @Prop({required: true, maxlength: 20, minlength: 5})
     name: string;
+
+    @Prop({required: true, ref: 'User'})
+    owner: Types.ObjectId;
     
     @Prop({type: Types.Array, ref: 'Messages'})
     messages: Types.Array<Message>
 
     @Prop({type: Types.Array, ref: 'Users'})
-    connectedUsers: Types.Array<User>;
+    connected_users: Types.Array<User>;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Room);
+export const RoomSchema = SchemaFactory.createForClass(Room);

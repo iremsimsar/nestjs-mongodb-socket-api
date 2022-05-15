@@ -1,22 +1,25 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from '../controllers/app.controller';
-import { AppService } from '../services/app.service';
-import { User, UserSchema } from '../models/users.model';
+import {RoomModule} from '../modules/room.module';
+import { AppGateway } from '../gateways/app.gateway';
+import { MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { Message, MessageSchema } from '../models/messages.models';
-import { AuthController } from '../controllers/auth/auth.controller';
+import { AuthMiddleware } from '../middleware/auth.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_URL),
+    RoomModule,
     MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      {name: Message.name, schema: MessageSchema},
-
-    ])
-    ],
-      controllers: [AppController, AuthController],
-      providers: [AppService]
+      { name: Message.name, schema: MessageSchema },
+    ]),
+  ],
+  providers: [AppGateway]
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware)
+      .forRoutes('/api');
+  }
+}

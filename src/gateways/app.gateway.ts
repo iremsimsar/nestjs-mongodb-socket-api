@@ -22,7 +22,6 @@ import {
     @SubscribeMessage('msgToServer')
     handleMessage(client: Socket, payload: string): void {
       console.log(payload)
-      
      this.server.emit('msgToClient', payload);
     }
    

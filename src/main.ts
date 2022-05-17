@@ -6,8 +6,7 @@ import { join } from 'path';
 
 async function main() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const port: number = parseInt(process.env.PORT) || 3000
-  app.useStaticAssets(join(__dirname, '..', 'static'));
+  const port: number = parseInt(process.env.PORT) || 3002
   const config = new DocumentBuilder()
   .setTitle('Socket App Swagger')
   .setDescription('This is a room-based socket application.')
@@ -20,7 +19,6 @@ SwaggerModule.setup('api', app, document);
   }).catch(err => {
     console.error("error: ", err);
   })
-
 }
 
 main()

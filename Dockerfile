@@ -4,12 +4,10 @@ WORKDIR /home
 
 COPY . .
 
-RUN cp -r .env.example .env
-
-RUN npm install -g typescript 
-
-RUN npm i -g @nestjs/cli 
+RUN npm install glob rimraf
 
 RUN npm i
+
+RUN npm i webpack
 
 CMD ["npm", "start"]

@@ -15,17 +15,23 @@ import { ApiHeader, ApiResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 @Controller('/api/rooms')
 export class RoomController {
     constructor(private userService: UserService, private roomService: RoomService) { }
+
     @Get() 
     @ApiOkResponse(responseRoomSchema)
-    async get(@Query() query: getRoomDto, @Res() res: Response) {
+    
+    async get(@Req() req: Request,  @Query() query: getRoomDto, @Res() res: Response) {
 
         let page = Number(query.page || 1)
         let page_size = Number(query.page_size > 50 ? 50 : query.page_size || 10)
 
+        const user = await this.userService.findById(req['user_id'])
+
         const rooms: {
             items: RoomDocument[],
             total: number
-        } = await this.roomService.findAll((page - 1) * page_size, page_size)
+        } = await this.roomService.find((page - 1) * page_size, page_size, {
+            'connected_users': user.id
+        })
 
         return res.status(HttpStatus.OK).json({
             items: rooms.items,
@@ -38,6 +44,7 @@ export class RoomController {
 
     @Post()
     @ApiResponse({ status: 200, description: 'Room created successfully' })
+
     async createRoom(@Req() req: Request, @Body() roomCredantials: createRoomDto, @Res() res: Response) {
 
         if (!roomCredantials.name)
@@ -66,6 +73,7 @@ export class RoomController {
 
     @Post(':roomId/join')
     @ApiResponse({ status: 200, description: 'User added to room successfully' })
+
     async addUser(@Req() req: Request, @Res() res: Response) {
 
         const user = await this.userService.findById(req['user_id'])

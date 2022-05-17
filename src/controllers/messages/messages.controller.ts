@@ -19,8 +19,9 @@ import { responseMessageSchema } from '../../dtos/message.dto';
 export class MessageController {
     constructor(private userService: UserService, private roomService: RoomService, private messageService: MessageService, private readonly messageGateway: MessageGateway) { }
 
-    @ApiOkResponse(responseMessageSchema)
     @Get(':roomId')
+    @ApiOkResponse(responseMessageSchema)
+    
     async get(@Query() query: any, @Req() req: Request, @Res() res: Response) {
 
         let page = Number(query.page || 1)
@@ -46,6 +47,7 @@ export class MessageController {
 
     @Post(':roomId/send')
     @ApiResponse({ status: 200, description: 'Message created successfully' })
+
     async sendMessage(@Req() req: Request, @Body() messageCredatials: MessageDto, @Res() res: Response) {
         const room_id = req.params.roomId
         if (!messageCredatials.text)

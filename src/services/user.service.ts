@@ -1,4 +1,4 @@
-import { Injectable,  UnauthorizedException, NotFoundException} from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { User, UserDocument } from '../models/users.model';
@@ -16,16 +16,14 @@ export class UserService {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
     async findOne(nickname: string) {
-        const user = await this.userModel.findOne({ nickname: nickname }).exec()
-        if (!user) throw new NotFoundException('User not found')
-        return user
+        return await this.userModel.findOne({ nickname: nickname }).exec()
     }
 
     async findById(id: string) {
         return await this.userModel.findById(id).exec()
     }
 
-    async verify (token) {
+    async verify(token) {
         const decoded_token: any = jwt.verify(token, process.env.JWT_SECRET_PASSWORD!)
         if (!decoded_token._id)
             throw new UnauthorizedException('Invalid token')

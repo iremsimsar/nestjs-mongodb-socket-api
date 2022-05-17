@@ -17,9 +17,9 @@ export class RoomService {
         return await this.roomModel.create(createRoom)
     }
 
-    async findAll(skip: number, limit: number) {
+    async find(skip: number, limit: number, filter: object) {
 
-        const rooms = await this.roomModel.find({})
+        const rooms = await this.roomModel.find(filter)
             .skip(skip)
             .limit(limit).exec();
 

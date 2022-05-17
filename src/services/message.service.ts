@@ -21,15 +21,15 @@ export class MessageService {
         }
     }
 
-    async readById(id): Promise<Message> {
+    async readById(id: string): Promise<Message> {
         return await this.messageModel.findById(id).exec();
     }
 
-    async update(id, Message: Message): Promise<Message> {
+    async update(id: string, Message: Message): Promise<Message> {
         return await this.messageModel.findByIdAndUpdate(id, Message, {new: true})
     }
 
-    async delete(id): Promise<any> {
+    async delete(id: string): Promise<any> {
         return await this.messageModel.findByIdAndRemove(id);
     }
 }

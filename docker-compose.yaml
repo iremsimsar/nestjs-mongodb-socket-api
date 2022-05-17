@@ -1,5 +1,4 @@
-version: '3.9'
-
+version: '3.9' 
 services:
   socket-app:
     container_name: socket-app

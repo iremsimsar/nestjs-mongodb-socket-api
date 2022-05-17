@@ -1,21 +1,23 @@
-import { sign } from 'jsonwebtoken';
-import { compare, hash } from 'bcrypt';
-import { Injectable, NestMiddleware, UnauthorizedException, Res, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Res, HttpStatus, BadRequestException } from '@nestjs/common';
 import { Body, Controller, Get, Post, Req, Query } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Room, RoomDocument } from '../../models/rooms.models';
+import { RoomDocument } from '../../models/rooms.models';
 import { Response, Request } from 'express';
-import { User, UserDocument } from '../../models/users.model';
 import { UserService } from '../../services/user.service';
 import { RoomService } from '../../services/room.service';
+import { getRoomDto, createRoomDto , responseRoomSchema} from '../../dtos/room.dto';
+import { ApiHeader, ApiResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Rooms')
+@ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer Token'
+})
 @Controller('/api/rooms')
 export class RoomController {
     constructor(private userService: UserService, private roomService: RoomService) { }
-
     @Get()
-    async get(@Query() query: any, @Res() res: Response) {
+    @ApiOkResponse(responseRoomSchema)
+    async get(@Query() query: getRoomDto, @Res() res: Response) {
 
         let page = Number(query.page || 1)
         let page_size = Number(query.page_size > 50 ? 50 : query.page_size || 10)
@@ -23,7 +25,7 @@ export class RoomController {
         const rooms: {
             items: RoomDocument[],
             total: number
-        } = await this.roomService.findAll(page, page_size)
+        } = await this.roomService.findAll((page - 1) * page_size, page_size)
 
         return res.status(HttpStatus.OK).json({
             items: rooms.items,
@@ -35,7 +37,9 @@ export class RoomController {
     }
 
     @Post()
-    async signUp(@Req() req: Request, @Body() roomCredantials, @Res() res: Response) {
+    @ApiResponse({ status: 200, description: 'Room created successfully' })
+    async createRoom(@Req() req: Request, @Body() roomCredantials: createRoomDto, @Res() res: Response) {
+
 
         if (!roomCredantials.name)
             throw new BadRequestException('Rooom name is required');
@@ -44,13 +48,14 @@ export class RoomController {
 
         if (!user) throw new BadRequestException('User not found')
 
-        roomCredantials.owner = user._id
-
         let room = await this.roomService.findOne(roomCredantials)
 
         if (room) throw new BadRequestException('Room name is already taken')
 
-        room = await this.roomService.create(roomCredantials)
+        room = await this.roomService.create({
+            name: roomCredantials.name,
+            owner: user._id
+        })
 
         await this.roomService.addUser(room.id, user.id)
 

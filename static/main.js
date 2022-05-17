@@ -5,7 +5,8 @@ const app = new Vue({
      name: '',
      text: '',
      messages: [],
-     socket: null
+     socket: null,
+     token: "mkddkmdkmdkmdmkdkmdmkmkdmkdmk"
     },
     methods: {
         getMessages() {
@@ -32,7 +33,11 @@ const app = new Vue({
     }
    },
     created() {
-     this.socket = io('http://localhost:3002')
+     this.socket = io('http://localhost:3002', {
+         query: {
+             token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjgwY2FiZGI5YjcyMDBkNWYwMGY3MzUiLCJpYXQiOjE2NTI3MjE4NDksImV4cCI6MTY1Mjc2NTA0OX0.hEaubA4zxHNVdipVYq_VnXKRllp6fjdTDScpRWuaRRw"
+             }
+             })
      this.socket.on('msgToClient', (message) => {
       this.receivedMessage(message)
      })

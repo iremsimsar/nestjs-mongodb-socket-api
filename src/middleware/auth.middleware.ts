@@ -1,12 +1,12 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User, UserDocument } from '../models/users.model';
+import { UserModule } from "src/modules/user.module";
+import { UserService } from "src/services/user.service";
+
 
 @Injectable()
-export class AuthMiddleware implements NestMiddleware {
+export class AuthMiddleware implements NestMiddleware, UserModule {
 
     use(req: Request, res: Response, next: NextFunction) {
         try {

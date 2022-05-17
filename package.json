@@ -27,6 +27,7 @@
     "@nestjs/mongoose": "^9.0.3",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/platform-socket.io": "^8.4.5",
+    "@nestjs/swagger": "^5.2.1",
     "@nestjs/websockets": "^8.4.5",
     "bcrypt": "^5.0.1",
     "dotenv": "^16.0.1",
@@ -34,7 +35,8 @@
     "mongoose": "^6.3.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "swagger-ui-express": "^4.4.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

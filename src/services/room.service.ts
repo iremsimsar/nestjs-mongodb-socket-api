@@ -5,6 +5,7 @@ import { Room, RoomDocument } from '../models/rooms.models';
 
 interface RoomType {
     name: string;
+    owner: ObjectId
 }
 
 @Injectable()
@@ -16,12 +17,12 @@ export class RoomService {
         return await this.roomModel.create(createRoom)
     }
 
-    async findAll(page: number, page_size: number) {
+    async findAll(skip: number, limit: number) {
 
         const rooms = await this.roomModel.find({})
-            .skip((page - 1) * page_size)
-            .limit(page_size).exec();
- 
+            .skip(skip)
+            .limit(limit).exec();
+
         const total = await this.roomModel.countDocuments().exec();
 
         return {
@@ -39,18 +40,10 @@ export class RoomService {
         await this.roomModel.updateOne(
             { _id: room_id },
             { $addToSet: { connected_users: user_id } }
-          )
+        )
     }
 
-    findById(id: string) {
-        return this.roomModel.findById(id).exec()
-    }
-
-    update(id: number, updateProductDto: Room) {
-        return `This action updates a #${id} product`;
-    }
-
-    remove(id: number) {
-        return `This action removes a #${id} product`;
+    async findById(id: string) {
+        return await this.roomModel.findById(id).exec()
     }
 }

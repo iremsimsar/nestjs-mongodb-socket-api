@@ -4,7 +4,7 @@ import { RoomDocument } from '../../models/rooms.models';
 import { Response, Request } from 'express';
 import { UserService } from '../../services/user.service';
 import { RoomService } from '../../services/room.service';
-import { getRoomDto, createRoomDto , responseRoomSchema} from '../../dtos/room.dto';
+import { getRoomDto, createRoomDto, responseRoomSchema } from '../../dtos/room.dto';
 import { ApiHeader, ApiResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Rooms')
@@ -15,7 +15,7 @@ import { ApiHeader, ApiResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 @Controller('/api/rooms')
 export class RoomController {
     constructor(private userService: UserService, private roomService: RoomService) { }
-    @Get()
+    @Get() 
     @ApiOkResponse(responseRoomSchema)
     async get(@Query() query: getRoomDto, @Res() res: Response) {
 
@@ -39,7 +39,6 @@ export class RoomController {
     @Post()
     @ApiResponse({ status: 200, description: 'Room created successfully' })
     async createRoom(@Req() req: Request, @Body() roomCredantials: createRoomDto, @Res() res: Response) {
-
 
         if (!roomCredantials.name)
             throw new BadRequestException('Rooom name is required');
@@ -65,4 +64,23 @@ export class RoomController {
 
     }
 
+    @Post(':roomId/join')
+    @ApiResponse({ status: 200, description: 'User added to room successfully' })
+    async addUser(@Req() req: Request, @Res() res: Response) {
+
+        const user = await this.userService.findById(req['user_id'])
+
+        if (!user) throw new BadRequestException('User not found')
+
+        const room = await this.roomService.findById(req.params.roomId)
+
+        if (!room) throw new BadRequestException('Room not found')
+
+        await this.roomService.addUser(room._id, user.id)
+
+        return res.status(HttpStatus.OK).json({
+            message: 'User added to room successfully'
+        })
+
+    }
 }

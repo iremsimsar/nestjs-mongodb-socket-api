@@ -31,11 +31,13 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   }
 
   handleDisconnect(client: Socket) {
+    client.emit('disconnect', {
+      user_id: client.id,
+    });
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
-    
     try {
       const decoded = await this.userService.verify(client?.handshake?.query?.token)
       this.logger.log(`Client connected: ${client.id}`);

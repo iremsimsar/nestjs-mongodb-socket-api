@@ -21,15 +21,19 @@ export class MessageController {
 
     @ApiOkResponse(responseMessageSchema)
     @Get(':roomId')
-    async get(@Query() query: any, @Res() res: Response) {
+    async get(@Query() query: any, @Req() req: Request, @Res() res: Response) {
 
         let page = Number(query.page || 1)
         let page_size = Number(query.page_size > 50 ? 50 : query.page_size || 10)
+        
+        const room = await this.roomService.findById(req.params.roomId)
+
+        if (!room) throw new BadRequestException('Room not found')
 
         const messages: {
             total: number,
             items: Message[],
-        } = await this.messageService.findAll(page, page_size)
+        } = await this.messageService.find(page, page_size, {room: room._id})
 
         return res.status(HttpStatus.OK).json({
             items: messages.items,

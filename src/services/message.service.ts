@@ -12,9 +12,9 @@ export class MessageService {
         return await new this.messageModel(message).save()
     }
 
-    async findAll(skip: number, limit:number): Promise<{total: number, items: Message[]}> {
-        const messages = await this.messageModel.find({}).skip(skip).limit(limit).exec();
-        const total = await this.messageModel.countDocuments().exec();
+    async find(skip: number, limit:number, filter: object): Promise<{total: number, items: Message[]}> {
+        const messages = await this.messageModel.find(filter).skip(skip).limit(limit).exec();
+        const total = await this.messageModel.countDocuments(filter).exec();
         return {
             total: total,
             items: messages

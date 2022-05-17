@@ -5,7 +5,7 @@ export class AuthDto {
   nickname: string;
 
   @ApiProperty()
-  password: number;
+  password: string;
 }
 
 

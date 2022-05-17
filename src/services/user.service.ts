@@ -1,7 +1,6 @@
-import { Injectable,  UnauthorizedException} from '@nestjs/common';
+import { Injectable,  UnauthorizedException, NotFoundException} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
-import { NotFoundError } from 'rxjs';
 import { User, UserDocument } from '../models/users.model';
 import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
@@ -9,6 +8,7 @@ import * as jwt from "jsonwebtoken";
 interface UserType {
     nickname: string;
     password: string;
+    loggedIn?: boolean;
 }
 
 @Injectable()
@@ -17,7 +17,7 @@ export class UserService {
 
     async findOne(nickname: string) {
         const user = await this.userModel.findOne({ nickname: nickname }).exec()
-        if (!user) throw new NotFoundError('User not found')
+        if (!user) throw new NotFoundException('User not found')
         return user
     }
 
@@ -30,6 +30,14 @@ export class UserService {
         if (!decoded_token._id)
             throw new UnauthorizedException('Invalid token')
         return decoded_token._id
+    }
+
+    async update(id: string, data: Partial<UserType>) {
+        return await this.userModel.findByIdAndUpdate(id, data, { new: true }).exec()
+    }
+
+    async create(user: UserType) {
+        return await new this.userModel(user).save()
     }
 
 }

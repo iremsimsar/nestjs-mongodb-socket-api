@@ -13,15 +13,15 @@ export class User {
     required: true,
     maxlength: 20,
     minlength: 5,
-    unique: true, // <1>
+    unique: true, 
   })
   nickname: string;
 
   @Prop({required: true})
-  password: string; // <2>
+  password: string;
 
   @Prop()
-  loggedIn: boolean; // <3>
+  loggedIn: boolean;
   @Prop({type: Types.Array, ref: 'Users'})
 
   messages: Types.Array<Message>;

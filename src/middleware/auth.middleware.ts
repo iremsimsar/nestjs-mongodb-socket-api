@@ -2,7 +2,6 @@ import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/commo
 import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { UserModule } from "src/modules/user.module";
-import { UserService } from "src/services/user.service";
 
 
 @Injectable()
@@ -13,16 +12,15 @@ export class AuthMiddleware implements NestMiddleware, UserModule {
             const token = req.headers["authorization"].split(" ")[1];
 
             const decoded_token: any = jwt.verify(token, process.env.JWT_SECRET_PASSWORD!)
-            
+
             if (!decoded_token._id)
                 throw new UnauthorizedException('Invalid token')
 
             req['user_id'] = decoded_token._id;
 
             next();
-            
+
         } catch (error) {
-            console.log("hiii", error);
             next(error);
         }
 
